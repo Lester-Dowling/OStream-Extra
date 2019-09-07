@@ -35,26 +35,22 @@ namespace {
 								return;
 							}
 						}
-					}
-					else { // d != '*' ==> Not the start of a comment:
+					} else { // d != '*' ==> Not the start of a comment:
 						s__.putback(d);
 						s__.putback(c);
 						return;
 					}
-				}
-				else {
+				} else {
 					// Unexpected eof reading d:
 					s__.putback(c);
 					return;
 				}
-			}
-			else if (c) { // c != '/' ==> not a comment:
+			} else if (c) { // c != '/' ==> not a comment:
 				s__.putback(c);
 				return;
 			}
 		}
 	}
-
 
 	inline std::istream& _read_opening_bracket(
 	  std::istream& s__,
@@ -65,24 +61,23 @@ namespace {
 			return s__;
 		// Do we have an opening bracket:
 		switch (c) {
-		case '(':
-			matching_closing_bracket = ')';
-			break;
-		case '{':
-			matching_closing_bracket = '}';
-			break;
-		case '[':
-			matching_closing_bracket = ']';
-			break;
-		default: // Missing bracket:
-			matching_closing_bracket = 0;
-			if (c)
-				s__.putback(c);
-			s__.clear(std::ios_base::failbit);
+			case '(':
+				matching_closing_bracket = ')';
+				break;
+			case '{':
+				matching_closing_bracket = '}';
+				break;
+			case '[':
+				matching_closing_bracket = ']';
+				break;
+			default: // Missing bracket:
+				matching_closing_bracket = 0;
+				if (c)
+					s__.putback(c);
+				s__.clear(std::ios_base::failbit);
 		}
 		return s__;
 	}
-
 
 	inline std::istream& _read_string_within_pair(
 	  std::istream& s__,
@@ -115,13 +110,11 @@ namespace {
 							s__.clear(std::ios_base::badbit);
 					}
 					return s__;
-				}
-				else if (c == quote && slash) { // Interior escaped quote:
+				} else if (c == quote && slash) { // Interior escaped quote:
 					result += quote;
 					slash = 0;
 					continue;
-				}
-				else if (slash) { // Non-escaping slashes are appended:
+				} else if (slash) { // Non-escaping slashes are appended:
 					result += slash;
 					slash = 0;
 					// Fall through ...
@@ -129,12 +122,11 @@ namespace {
 				if (c == kSlash) {
 					slash = c;
 					continue;
-				}
-				else {
+				} else {
 					result += c;
 					continue;
 				}
-			}	   // end if (quote)
+			}	  // end if (quote)
 			else { // Unquoted String ------------------------------------
 				if (c == closing_delimiter)
 					return s__;
@@ -142,14 +134,12 @@ namespace {
 					// Start of a quoted string:
 					quote = c;
 					continue;
-				}
-				else if ((c == kDQuote || c == kSQuote) && slash) {
+				} else if ((c == kDQuote || c == kSQuote) && slash) {
 					// Escaped quote:
 					result += c;
 					slash = 0;
 					continue;
-				}
-				else if (slash) { // Non-escaping slashes are appended:
+				} else if (slash) { // Non-escaping slashes are appended:
 					result += slash;
 					slash = 0;
 					// Fall through ...
@@ -157,8 +147,7 @@ namespace {
 				if (c == kSlash) {
 					slash = c;
 					continue;
-				}
-				else if (std::isspace(c, std::locale("C"))) {
+				} else if (std::isspace(c, std::locale("C"))) {
 					// Whitespace marks the end of an unquoted string,
 					// so ignore everything till the closing delimiter:
 					_ignore_comments_within_pair(s__);
@@ -168,8 +157,7 @@ namespace {
 							s__.clear(std::ios_base::badbit);
 					}
 					return s__;
-				}
-				else { // Continue appending to string:
+				} else { // Continue appending to string:
 					result += c;
 					continue;
 				}
@@ -181,7 +169,6 @@ namespace {
 	}
 
 } // namespace
-
 
 namespace std {
 	namespace whitespace_delimited {
@@ -201,8 +188,9 @@ namespace std {
 			return o << p.first << "    " << p.second;
 		}
 	} // end namespace whitespace_delimited
+}
 
-	// namespace parenthesis_wrapped {
+namespace std {
 
 	/**
 	 * Put-to operator for @c pair.  The output format for a @c pair is the @c
@@ -249,8 +237,7 @@ namespace std {
 		size_t dquote_pos = p.first.find_first_of('"');
 		if (dquote_pos == string::npos) {
 			o << p.first;
-		}
-		else {
+		} else {
 			string dup(p.first);
 			while (dquote_pos != string::npos) {
 				dup.insert(dquote_pos, 1, '\\');
@@ -289,8 +276,7 @@ namespace std {
 		size_t dquote_pos = p.second.find_first_of('"');
 		if (dquote_pos == string::npos) {
 			o << p.second;
-		}
-		else {
+		} else {
 			string dup(p.second);
 			while (dquote_pos != string::npos) {
 				dup.insert(dquote_pos, 1, '\\');
@@ -329,8 +315,7 @@ namespace std {
 		dquote_pos = p.first.find_first_of('"');
 		if (dquote_pos == string::npos) {
 			o << p.first;
-		}
-		else {
+		} else {
 			string dup(p.first);
 			while (dquote_pos != string::npos) {
 				dup.insert(dquote_pos, 1, '\\');
@@ -344,8 +329,7 @@ namespace std {
 		dquote_pos = p.second.find_first_of('"');
 		if (dquote_pos == string::npos) {
 			o << p.second;
-		}
-		else {
+		} else {
 			string dup(p.second);
 			while (dquote_pos != string::npos) {
 				dup.insert(dquote_pos, 1, '\\');
@@ -356,168 +340,4 @@ namespace std {
 		return o << "\")";
 	}
 
-	/**
-	 * Input operator for @c pair.  The input format for a @c pair is assumed to be two
-	 * elements separated by a comma and wrapped in matching brackets.  C-style comments are
-	 * permitted anywhere within the @c pair and are ignored.
-	 *
-	 * For example, all the following are accepted as valid input for @c pairs:
-	 *
-	 * <code><pre>
-	 *     ( 4, 6 )
-	 *     [ a , b ]
-	 *     {  -12.56e+9, 7 }
-	 * </pre></code>
-	 *
-	 * The following examples are @e not accepted as valid input for
-	 * @c pairs:
-	 *
-	 * <code><pre>
-	 *     ( 4, 6 }
-	 *     [ gobble ]
-	 *     { gook ]
-	 * </pre></code>
-	 */
-	template<class U, class V>
-	istream& operator>>(istream& s__, pair<U, V>& result__)
-	{
-		const char kComma = ',';
-		char c = 0, closing_bracket = 0;
-
-		if (!_read_opening_bracket(s__, closing_bracket))
-			return s__;
-
-		// first of pair --------------------------------------------------
-		_ignore_comments_within_pair(s__);
-		s__ >> result__.first;
-		_ignore_comments_within_pair(s__);
-
-		// Expecting to read a comma:
-		if (s__ >> c) {
-			if (c != kComma) {
-				s__.clear(std::ios_base::badbit);
-				return s__;
-			}
-		}
-
-		// second of pair -------------------------------------------------
-		_ignore_comments_within_pair(s__);
-		s__ >> result__.second;
-		_ignore_comments_within_pair(s__);
-
-		// Expecting to read the closing bracket:
-		if (s__ >> c) {
-			if (c != closing_bracket)
-				s__.clear(std::ios_base::badbit);
-		}
-		return s__;
-	}
-
-	/**
-	 * Specialization of the input operator for @c pair where the @c first of
-	 * the pair is a @c std::string.  The input format for a @c pair is assumed to
-	 * be two elements separated by a comma and wrapped in matching brackets.
-	 * C-style comments are permitted anywhere within the @c pair and are ignored.
-	 *
-	 * The @c std::string can be one bare word, or, zero or more words wrapped by
-	 * matching quotes, either single or double.
-	 *
-	 * For example, all the following are accepted as valid input for @c pairs:
-	 *
-	 * <code><pre>
-	 *     ( Saturday, 6 )
-	 *     [ "Journeyman Project" , b ]
-	 *     {  "The \"And\" between the \"Fish\"" , 123 }
-	 *     {'abc "def"',9}
-	 *     ( 'Some time in December' , 25 )
-	 *     ( \"def\" , 1.5)
-	 * </pre></code>
-	 *
-	 * The following are @e not accepted as valid input for @c pairs:
-	 *
-	 * <code><pre>
-	 *     ( Saturday Week, 13 )    : String with space should be wrapped by quotes.
-	 *     [ Journeyman , b }       : Mismatched brackets [}
-	 *     (\"def abc\",1)          : String is not wrapped by escaped quotes.
-	 * </pre></code>
-	 */
-	template<class V>
-	istream& operator>>(istream& s__, pair<string, V>& result__)
-	{
-		const char kComma = ',';
-		char c = 0, closing_bracket = 0;
-
-		if (!_read_opening_bracket(s__, closing_bracket))
-			return s__;
-
-		// first of pair --------------------------------------------------
-		if (!_read_string_within_pair(s__, result__.first, kComma))
-			return s__;
-
-		// second of pair -------------------------------------------------
-		_ignore_comments_within_pair(s__);
-		s__ >> result__.second;
-		_ignore_comments_within_pair(s__);
-
-		// Expecting to read the closing bracket:
-		if (s__ >> c) {
-			if (c != closing_bracket)
-				s__.clear(std::ios_base::badbit);
-		}
-
-		return s__;
-	}
-
-	/**
-	 * Specialization of the input operator for @c pair where the @c second of
-	 * the pair is a @c std::string.
-	 */
-	template<class U>
-	istream& operator>>(istream& s__, pair<U, string>& result__)
-	{
-		const char kComma = ',';
-		char c = 0, closing_bracket = 0;
-
-		if (!_read_opening_bracket(s__, closing_bracket))
-			return s__;
-
-		// first of pair --------------------------------------------------
-		_ignore_comments_within_pair(s__);
-		s__ >> result__.first;
-		_ignore_comments_within_pair(s__);
-		// Expecting to read a comma:
-		if (s__ >> c) {
-			if (c != kComma) {
-				s__.clear(std::ios_base::badbit);
-				return s__;
-			}
-		}
-
-		// second of pair -------------------------------------------------
-		_read_string_within_pair(s__, result__.second, closing_bracket);
-
-		return s__;
-	}
-
-	/**
-	 * Specialization of the input operator for @c pair where both the @c first and @c
-	 * second of the pair are @c std::strings.
-	 */
-	inline istream& operator>>(istream& s__, pair<string, string>& result__)
-	{
-		const char kComma = ',';
-		char closing_bracket = 0;
-
-		if (!_read_opening_bracket(s__, closing_bracket))
-			return s__;
-
-		// first of pair --------------------------------------------------
-		if (!_read_string_within_pair(s__, result__.first, kComma))
-			return s__;
-
-		// second of pair -------------------------------------------------
-		_read_string_within_pair(s__, result__.second, closing_bracket);
-
-		return s__;
-	}
 } // end namespace std
