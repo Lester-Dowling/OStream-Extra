@@ -71,14 +71,10 @@ else()
   message(WARNING "No such repo available: cmake-precompiled-header")
 endif()
 
-
-# Make globally available all required external libraries:
-add_subdirectory ("external")
-
-
 #
 # Boost
 #
+add_subdirectory ("boost")
 target_link_libraries(
   ${TARGET}
   PRIVATE

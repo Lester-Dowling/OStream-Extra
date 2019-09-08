@@ -27,6 +27,6 @@ target_include_directories(${PROJECT_NAME}
 #
 # Unit tests
 #
-include(CTest)
-enable_testing()
+# include(CTest)
+# enable_testing()
 add_subdirectory ("Unit-Tests")
