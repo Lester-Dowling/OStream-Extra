@@ -1,5 +1,5 @@
 /**
- * @file        IO-Extra/pair.hpp
+ * @file        OStream-Extra/pair.hpp
  * @date        Started Mon Mar  5 11:11:49 EST 2007
  * @author      Lester J. Dowling
  * @par         Copyright &copy; Lester J. Dowling.

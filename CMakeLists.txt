@@ -4,6 +4,8 @@ project (
   VERSION 0.5.0
   DESCRIPTION "Extra overrides of operator<< for common types."
   )
+option(BUILD_UNIT_TESTS "Whether to build or ignore unit tests for this project" OFF)
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 add_library( ${PROJECT_NAME} INTERFACE )
@@ -27,6 +29,8 @@ target_include_directories(${PROJECT_NAME}
 #
 # Unit tests
 #
+if (BUILD_UNIT_TESTS)
 # include(CTest)
 # enable_testing()
 add_subdirectory ("Unit-Tests")
+endif()
