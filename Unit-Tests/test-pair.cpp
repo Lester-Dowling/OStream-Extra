@@ -6,7 +6,7 @@
 #include "OStream-Extra/pair.hpp"
 // include "OStream-Extra/sequence.hpp"
 
-BOOST_AUTO_TEST_SUITE(test_pair_suite, *boost::unit_test::enabled())
+BOOST_AUTO_TEST_SUITE(test_pair_output_suite, *boost::unit_test::enabled())
 
 typedef boost::mpl::list<int16_t, int32_t, float, double> signed_test_types;
 typedef boost::mpl::list<uint16_t, uint32_t> unsigned_test_types;
