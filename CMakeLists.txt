@@ -1,20 +1,24 @@
-cmake_minimum_required (VERSION 3.14)
-project (
+cmake_minimum_required(VERSION 3.14)
+project(
   "OStream-Extra"
   VERSION 0.5.0
-  DESCRIPTION "Extra overrides of operator<< for common types."
-  )
-option(BUILD_UNIT_TESTS "Whether to build or ignore unit tests for this project" OFF)
-
+  DESCRIPTION "Extra overrides of operator<< for common types.")
+option(BUILD_UNIT_TESTS
+       "Whether to build or ignore unit tests for this project" OFF)
+message(STATUS "Building unit tests: ${BUILD_UNIT_TESTS}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-add_library( ${PROJECT_NAME} INTERFACE )
+#
+# This project only has interface headers.  No translation units.
+#
+add_library(${PROJECT_NAME} INTERFACE)
 
-file(GLOB_RECURSE PUB_FILES LIST_DIRECTORIES false CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/public/*)
-target_sources(${PROJECT_NAME}
-  INTERFACE  ${PUB_FILES}
-  )
-
+file(
+  GLOB_RECURSE PUB_FILES
+  LIST_DIRECTORIES false
+  CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/public/*)
+target_sources(${PROJECT_NAME} INTERFACE ${PUB_FILES})
+# Debug dump of public interface files:
 foreach(pub_file ${PUB_FILES})
   message(STATUS "${PROJECT_NAME} pub file: ${pub_file}")
 endforeach(pub_file)
@@ -23,14 +27,16 @@ endforeach(pub_file)
 # The public include directory for this library's clients
 #
 target_include_directories(${PROJECT_NAME}
-  INTERFACE
-  ${CMAKE_CURRENT_SOURCE_DIR}/public)
+                           INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/public)
 
 #
-# Unit tests
+# Unit tests Only build unit tests if this project isn't a submodule in a super-
+# project.
 #
-if (BUILD_UNIT_TESTS)
-# include(CTest)
-# enable_testing()
-add_subdirectory ("Unit-Tests")
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  include(CTest)
+  message(STATUS "Building unit tests: ${BUILD_TESTING}")
+  if(BUILD_TESTING)
+    add_subdirectory("Unit-Tests")
+  endif()
 endif()
