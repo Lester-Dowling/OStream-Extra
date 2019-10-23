@@ -4,7 +4,6 @@ project(
   VERSION 0.5.0
   DESCRIPTION "Extra overrides of operator<< for common types.")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(BOOST_REQUIRED_COMPONENTS boost)
 
 #
 # This project only has interface headers.  No translation units.
@@ -44,6 +43,6 @@ endif()
 #
 # Unit tests
 #
-if(BUILD_TESTING)
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME AND BUILD_TESTING)
   add_subdirectory("Unit-Tests")
 endif()
