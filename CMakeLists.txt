@@ -3,10 +3,8 @@ project(
   "OStream-Extra"
   VERSION 0.5.0
   DESCRIPTION "Extra overrides of operator<< for common types.")
-option(BUILD_UNIT_TESTS
-       "Whether to build or ignore unit tests for this project" OFF)
-message(STATUS "Building unit tests: ${BUILD_UNIT_TESTS}")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+set(BOOST_REQUIRED_COMPONENTS boost)
 
 #
 # This project only has interface headers.  No translation units.
@@ -29,14 +27,23 @@ endforeach(pub_file)
 target_include_directories(${PROJECT_NAME}
                            INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/public)
 
-#
-# Unit tests Only build unit tests if this project isn't a submodule in a super-
-# project.
-#
+# Build unit tests only if this project isn't a submodule in a super-project.
 if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   include(CTest)
   message(STATUS "Building unit tests: ${BUILD_TESTING}")
   if(BUILD_TESTING)
-    add_subdirectory("Unit-Tests")
-  endif()
+    list(
+      APPEND BOOST_REQUIRED_COMPONENTS #
+             filesystem #
+             date_time #
+             regex #
+             unit_test_framework)
+  endif(BUILD_TESTING)
+endif()
+
+#
+# Unit tests
+#
+if(BUILD_TESTING)
+  add_subdirectory("Unit-Tests")
 endif()
