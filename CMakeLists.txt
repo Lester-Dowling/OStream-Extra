@@ -5,6 +5,14 @@ project(
   DESCRIPTION "Extra overrides of operator<< for common types.")
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+set(ENV{BOOST_REQUIRED_COMPONENTS} "boost")
+function(boost_add_component)
+  foreach(boost_component ${ARGV})
+    set(ENV{BOOST_REQUIRED_COMPONENTS}
+        "$ENV{BOOST_REQUIRED_COMPONENTS};${boost_component}")
+  endforeach(boost_component)
+endfunction()
+
 #
 # This project only has interface headers.  No translation units.
 #
@@ -31,12 +39,7 @@ if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
   include(CTest)
   message(STATUS "Building unit tests: ${BUILD_TESTING}")
   if(BUILD_TESTING)
-    list(
-      APPEND BOOST_REQUIRED_COMPONENTS #
-             filesystem #
-             date_time #
-             regex #
-             unit_test_framework)
+    boost_add_component(filesystem date_time regex unit_test_framework)
   endif(BUILD_TESTING)
 endif()
 
