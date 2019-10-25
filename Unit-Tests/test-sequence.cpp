@@ -1,7 +1,6 @@
 // Unit-Tests/test-sequence.cpp
 #include "pch-unit-tests.hpp"
 #include <boost/test/unit_test.hpp>
-#include <boost/test/test_case_template.hpp>
 #include <boost/mpl/list.hpp>
 #include "OStream-Extra/sequence.hpp"
 
